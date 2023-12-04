@@ -13,35 +13,54 @@ export default function Charts() {
 
     const [trainings, setTrainings] = useState([]);
 
+
+
     const REST_URL = "https://traineeapp.azurewebsites.net/gettrainings";
 
     const getTrainings = () => {
         fetch(REST_URL)
             .then(response => response.json())
             .then(responseData => {
-                console.log("responsedata " + responseData);
-                const trainingsForChart = responseData.map((training, index) => ({
-                    ...training,
-                    id: training.id,
-                    name: training.activity,
-                    fill: getColor(index),
-                    //    duration: training.duration
-                }));
+                const groupedTrainings = groupTrainings(responseData);
+                // kaksi parametria treenit ja indeksi
+                // indeksi väriä varten
 
-                // const groupedTrainings = groupBy(trainings, training => training.name);
-                // const groupedTrainings = _.groupBy(trainingsForChart, 'name');
+                const trainingsForChart = groupedTrainings.map((trainings, index) => ({
+                    name: trainings.name,
+                    // fill attribuutti tarvitaan, jotta radialBar saa värin
+                    fill: getColor(index),
+                    durations: trainings.trainings.reduce((total, training) => total + training.duration, 0),
+                }));
                 setTrainings(trainingsForChart);
                 console.log("Trainings for chart: " + trainingsForChart);
-                // console.log("Grouped trainings " + groupedTrainings)
+
             })
             .catch(error => {
                 console.log(error)
             });
     }
 
+    // luodaan funktio, jonka avulla saadaan treenit ryhmiteltyä
+    const groupTrainings = (trainings) => {
+        // tyhjä olio muuttuja
+        const groupedTrainings = {};
+        // käydään treenit läpi
+        trainings.forEach(training => {
+            // katsotaan onko treenille jo olemassa ryhmä 'group'
+            // jos ryhmää ei ole, tehdään sille uusi lista
+            if (!groupedTrainings[training.activity]) {
+                groupedTrainings[training.activity] = { name: training.activity, trainings: [] };
+            }
+            // lisätään treenit omiin ryhmiin
+            groupedTrainings[training.activity].trainings.push(training);
+        });
+        // palautetaan ryhmitetyt treenit
+        return Object.values(groupedTrainings);
+    };
+
     // värit tilastotaulukkoon
     const getColor = (index) => {
-        const colors = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AF19FF"];
+        const colors = ["#FF33C7", "#9333FF", "#BEFF33", "#33FF58", "#33D1FF"];
         return colors[index % colors.length];
     };
 
