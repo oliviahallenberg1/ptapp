@@ -64,7 +64,11 @@ export default function CustomerGrid() {
         if (confirm("Please confirm action")) {
 
             console.log("params: ", params.data.links[0].href)
-            fetch(params.data.links[0].href, { method: 'DELETE' })
+            // deployattu koodi hakee fetchattavan linkin https pyyntönä, 
+            // eikä hyväksy defaultina tulevaa http-pyyntöä
+            // vaihdetaan http https:ksi
+            // .replace funktion avulla
+            fetch(params.data.links[0].href.replace('http://', 'https://'), { method: 'DELETE' })
                 .then(response => {
                     if (response.ok) {
                         getCustomers();
@@ -80,7 +84,7 @@ export default function CustomerGrid() {
         }
     }
 
-    
+
 
     const exportData = customers.map(customer => ({
         Lastname: customer.lastname,
@@ -91,12 +95,12 @@ export default function CustomerGrid() {
         email: customer.email,
         Phone: customer.phone
     }));
- 
+
     return (
         <>
             <div className="ag-theme-material"
                 style={{ height: '600px', width: '100%', margin: 'auto' }}>
-                <AddCustomer AddCustomer={AddCustomer} getCustomers={getCustomers} setMsg={setMsg} setOpen={setOpen}/>
+                <AddCustomer AddCustomer={AddCustomer} getCustomers={getCustomers} setMsg={setMsg} setOpen={setOpen} />
                 <AgGridReact
                     rowData={customers}
                     columnDefs={columns}

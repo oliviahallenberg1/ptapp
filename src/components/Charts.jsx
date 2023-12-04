@@ -29,10 +29,10 @@ export default function Charts() {
                 }));
 
                 // const groupedTrainings = groupBy(trainings, training => training.name);
-                //  const groupedTrainings = _.groupBy(trainingsForChart, 'name');
-                setTrainings(groupedTrainings);
+                // const groupedTrainings = _.groupBy(trainingsForChart, 'name');
+                setTrainings(trainingsForChart);
                 console.log("Trainings for chart: " + trainingsForChart);
-                console.log("Grouped trainings " + groupedTrainings)
+                // console.log("Grouped trainings " + groupedTrainings)
             })
             .catch(error => {
                 console.log(error)
@@ -60,7 +60,7 @@ export default function Charts() {
                     <RadialBar minAngle={15}
                         label={{ fill: '#00000', position: 'middle' }}
                         background clockWise={true}
-                        dataKey='duration'
+                        dataKey='durations'
                         fill={(_, index) => getColor(index)} />
                     <Legend
                         iconSize={10}

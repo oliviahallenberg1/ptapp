@@ -27,7 +27,7 @@ export default function EditCustomer(props) {
 
     const handleSave = () => {
         // handleClose();
-        updateCustomer(customer, props.customer.links[0].href);
+        updateCustomer(customer, props.customer.links[0].href.replace('http://', 'https://'));
         setOpen(false); // dialogin sulku
     }
     const handleClick = () => {
